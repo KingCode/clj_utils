@@ -1,6 +1,7 @@
 (ns clj-utils.core)
 
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
+(defn show-cp
+"Shows system classpath elements"
+[]
+  (let [ cp (. (System/getProperties) getProperty "java.class.path") ]
+    (println (apply str (interpose "\n" (. cp split ":"))))))
