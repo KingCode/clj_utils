@@ -8,4 +8,5 @@
                  ;;[clojurecheck "2.0.2"]
                  [marginalia "0.7.1"]
                  [org.clojure/core.memoize "0.5.6"]
+                 [org.clojure/core.rrb-vector "0.0.9"]
                  [commons-io/commons-io "2.4"]])

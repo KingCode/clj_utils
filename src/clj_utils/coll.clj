@@ -37,8 +37,10 @@
  the subsequence from positions start to butend - 1.
  butstart must be zero-based and positive, and butstart must be <= butend.
 "
-[ coll butstart butend ]
+([ coll butstart butend ]
   (concat (subsq coll 0 butstart) (subsq coll butend (count coll))))
+([ coll butstart ]
+  (but-subsq coll butstart (count coll))))
 
 
 (defn but-nth
@@ -47,7 +49,7 @@
   (but-subsq coll n (+ n 1)))
 
 
-(defn replace-all
+(defn replace
 "Yields a new seq from coll with r and rs replacing elements from start to end - 1 in coll,
  in the returned seq.
 "
@@ -57,14 +59,13 @@
     [ r ] rs
     (subsq coll end (count coll))))
 
-(declare insert)
 
-(defn replace-with
+(defn replace-1
 "Yields a new seq from coll with the element at pos replaced by r, rs.
 "
 [ coll pos r & rs ]
   (->> (concat [coll pos (inc pos) r] rs)
-    (apply replace-all)))
+    (apply replace)))
 
 
 (defn insert
