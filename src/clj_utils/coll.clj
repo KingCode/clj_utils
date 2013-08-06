@@ -50,33 +50,34 @@
 
 
 (defn replace
-"Yields a new seq from coll with r and rs replacing elements from start to end - 1 in coll,
- in the returned seq.
+"Yields a new seq from coll with items replacing elements from start to end - 1 in coll,
+ in the returned seq. If there are no items coll is returned.
 "
-[ coll start end  r & rs ]
-  (concat
-    (subsq coll 0 start)
-    [ r ] rs
-    (subsq coll end (count coll))))
+[ coll start end  & items ]
+  (if (empty? items) coll
+      (concat
+        (subsq coll 0 start)
+        items
+        (subsq coll end (count coll)))))
 
 
 (defn replace-1
-"Yields a new seq from coll with the element at pos replaced by r, rs.
+"Yields a new seq from coll with the element at pos replaced by each of items.
+ If there are no items coll is returned.
 "
-[ coll pos r & rs ]
-  (->> (concat [coll pos (inc pos) r] rs)
-    (apply replace)))
+[ coll pos & items]
+  (if (empty? items) coll
+      (->> (concat [coll pos (inc pos) r] rs)
+        (apply replace))))
 
 
 (defn insert
-"Yields a new seq from coll with in inserted at pos. All elements
- currently at pos and following are appended after the last inserted element
- in the returned seq.
+"Yields a new seq from coll with element at pos replaced by each of  items. 
 "
-[ coll pos in & ins ]
+[ coll pos & items]
   (concat
     (subsq coll 0 pos)
-    [in] ins
+    items
     (subsq coll pos (count coll))))
 
 
