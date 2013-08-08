@@ -100,8 +100,11 @@
        (is (ok [1 2] (remove-rnb SP v 4 3)))
        (is (ok [1 4 5] (remove-rnb SP v 2 2)))
        (is (ok [] (remove-rnb SP v 4 5)))
-       (is (ok [] (remove-rnb SP v2 0 1)))
+       (is (ok [] (remove-rnb SP v2 0 1))))))
 
+(deftest peek-test
+  (testing "peek, peek-n, peek-nb, peek-r, peek-rn, peek-rnb signatures" 
+    (let [ v [1 2 3 4 5] v2 [100] ]
        (is (= 5 (peek SP v)))
        (is (= 100 (peek SP v2)))
        
@@ -132,8 +135,11 @@
        (is (ok [5 4 3 2 1] (peek-rnb SP v 4 5)))  
        (is (ok [4 3 2] (peek-rnb SP v 3 3)))
        (is (ok [1] (peek-rnb SP v 0 1)))
-       (is (ok [100] (peek-rnb SP v2 0 1)))
+       (is (ok [100] (peek-rnb SP v2 0 1))))))
 
+(deftest but-test
+  (testing "but, but-n, but-r, but-rn, but-rnb signatures"
+    (let [ v [1 2 3 4 5] v2 [100] ]
        (is (ok [1 2 3 4] (but SP v)))
        (is (ok [1 2 3 4] (but SP v 4)))
        (is (ok [1 2 3 5] (but SP v 3)))
@@ -151,6 +157,84 @@
        (is (ok [1 2 3 4] (but-r SP v 4 5)))
        (is (ok [1 2 3] (but-r SP v 3)))
        (is (ok [1 2] (but-rn SP v 2 3)))
-       (is (ok [5] (but-rnb SP v 3 4)))
+       (is (ok [5] (but-rnb SP v 3 4))))))
+
+(deftest insert-test
+  (testing "insert insert-b signatures"
+    (let [ v [1 2 3 4 5] v2 [100] ]
+       (is (ok [1 2 :a :b 3 4 5] (insert SP v 2 [:a :b])))
+       (is (ok [:a 1 2 3 4 5] (insert SP v 0 [:a])))
+       (is (ok [1 2 3 4 5 :a :b] (insert SP v 5 [:a :b])))
+       (is (ok [1 2 3 4 5] (insert SP v 2 [])))
+       (is (ok [1 2 3 4 5] (insert SP v 0 [])))
+       (is (ok [1 2 3 4 5] (insert SP v 4 [])))
+       (is (ok [:a 100] (insert SP v2 0 [:a])))
+       (is (ok [100 :a :b :c] (insert SP v2 1 [:a :b :c])))
+
+       (is (ok [1 2 3 :b :a 4 5] (insert-b SP v 3 [:a :b])))
+       (is (ok [:b :a 1 2 3 4 5] (insert-b SP v 0 [:a :b])))
+       (is (ok [1 2 3 4 5 :b :a] (insert-b SP v 5 [:a :b])))
+       (is (ok [:b :a 100] (insert-b SP v2 0 [:a :b])))
+       (is (ok [100 :b :a] (insert-b SP v2 1 [:a :b]))))))
        
-)))
+(deftest replace-test
+  (testing "replace, replace-b, replace-n, replace-r, replace-rnb signatures"
+    (let [ v [1 2 3 4 5] v2 [100]]
+      (is (ok [1 2 :a 4 5] (replace SP v 2 [:a])))
+      (is (ok [1 2 3 :a :b :c 5] (replace SP v 3 [:a :b :c])))
+      (is (ok [1 2 3 5] (replace SP v 3 [])))
+      (is (ok [:a 2 3 4 5] (replace SP v 0 [:a])))
+      (is (ok [2 3 4 5] (replace SP v 0 [])))
+      (is (ok [1 2 3 4 5 :a :b :c :d] (replace SP v [:a :b :c :d])))
+      
+      (is (ok [1 2 3 :b :a 5] (replace-b SP v 3 [:a :b])))
+      (is (ok [1 2 3 4 :b :a] (replace-b SP v 4 [:a :b])))
+      (is (ok [:a 2 3 4 5] (replace-b SP v 0 [:a])))
+      (is (ok [:b :a 2 3 4 5] (replace-b SP v 0 [:a :b])))
+      (is (ok [2 3 4 5] (replace-b SP v 0 [])))
+      (is (ok [1 2 4 5] (replace-b SP v 2 [])))
+      (is (ok [1 2 3 4] (replace-b SP v 4 [])))
+
+      (is (ok [1 2 3 4 :a] (replace-n SP v 1 [:a])))
+      (is (ok [1 2 3 :a :b] (replace-n SP v 2 [:a :b])))
+      (is (ok [:a] (replace-n SP v 5 [:a])))
+      (is (ok [] (replace-n SP v 5 [])))
+      (is (ok [:a :b] (replace-n SP v2 1 [:a :b])))
+      (is (ok [] (replace-n SP v2 1 [])))
+      (is (ok [100] (replace-n SP v2 0 [:a :b :c])))
+
+      (is (ok [1 2 :a :b :c 5] (replace-r SP v 2 4 [:a :b :c])))
+      (is (ok [1 :a 5] (replace-r SP v 1 4 [:a])))
+      (is (ok [:a :b 4 5] (replace-r SP v 0 3 [:a :b])))
+      (is (ok [1 2 3 4 :a :b] (replace-r SP v 4 5 [:a :b])))
+      (is (ok [1 2] (replace-r SP v 2 5 [])))
+      (is (ok [1 2 3 4 5] (replace-r SP v 5 5 [])))
+      (is (ok [3 4 5] (replace-r SP v 0 2 [])))
+      (is (ok [:a :b] (replace-r SP v2 0 1 [:a :b])))
+
+      (is (ok [1 2 3 :a :b] (replace-rn SP v 3 2 [:a :b])))
+      (is (ok [1 :a 5] (replace-rn SP v 1 3 [:a])))
+      (is (ok [:a :b :c] (replace-rn SP v 0 5 [:a :b :c])))
+      (is (ok [] (replace-rn SP v 0 5 [])))
+      (is (ok [:a :b] (replace-rn SP v2 0 1 [:a :b])))
+      (is (ok [100] (replace-rn SP v2 0 0 [:a])))
+      
+      (is (ok [1 2 3 :b :a] (replace-rnb SP v 4 2 [:a :b])))
+      (is (ok [1 :a] (replace-rnb SP v 4 4 [:a])))
+      (is (ok [1 :b :a] (replace-rnb SP v 4 4 [:a :b])))
+      (is (ok [:c :b :a] (replace-rnb SP v 4 5 [:a :b :c])))
+      (is (ok [4 5] (replace-rnb SP v 2 3 [])))
+      (is (ok [] (replace-rnb SP v 4 5 [])))
+      (is (ok [:b :a] (replace-rnb SP v2 0 1 [:a :b]))))))
+
+(deftest test-push
+  (testing "push signatures"
+    (let [ v [1 2 3] v2 [100] ]
+      (is (ok [1 2 3 :a] (push SP v [:a])))
+      (is (ok [1 2 3 :a :b :c] (push SP v [:a :b :c])))
+      (is (ok [1 2 3] (push SP v [])))
+      (is (ok [100 :a :b] (push SP v2 [:a :b])))
+      (is (ok [100] (push SP v2 [])))
+      )))
+
+

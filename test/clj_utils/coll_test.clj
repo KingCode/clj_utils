@@ -48,7 +48,7 @@
        (is (= '(1 2 :a :b :c :d 4 5 6) (replace li 2 3 :a :b :c :d)))
        (is (= '(:a :b 2 3 4 5 6) (replace li 0 1 :a :b)))
        (is (= '(1 2 3 4 5 :a :b) (replace li 5 6 :a :b)))
-       (is (= '(1 2 3 4 5 6) (replace li 0 1 )))
+       (is (= '(2 3 4 5 6) (replace li 0 1 )))
        (is (= '(1 2 3 4 5 6) (replace li 0 0 :a)))
        )))
 (deftest replace-1-test
