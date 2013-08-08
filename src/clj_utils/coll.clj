@@ -1,4 +1,5 @@
 (ns clj-utils.coll
+  (:refer-clojure :exclude [replace]) 
   (:use [clj-utils [core :only (thread-it)]])
   (:import (java.util Properties)))
 
@@ -23,9 +24,8 @@
 
 
 (defn subsq
-"Yields a new seq from coll with its elements from positions start to end - 1
+"Yields a new seq from an indexed collection with its elements from positions start to end - 1
  inclusively.
- start must be zero-based and positive, and start must be <= end.
 "
 [ coll start end ]
   (thread-it (range start end)
@@ -33,9 +33,8 @@
 
 
 (defn but-subsq
-"Yields a new seq containing the same elements of coll in the same order, except for
- the subsequence from positions start to butend - 1.
- butstart must be zero-based and positive, and butstart must be <= butend.
+"Yields a new seq containing the elements of an indexed coll order, except for
+ those within the range from start to (dec butend) .
 "
 ([ coll butstart butend ]
   (concat (subsq coll 0 butstart) (subsq coll butend (count coll))))
@@ -54,7 +53,9 @@
  in the returned seq. If there are no items coll is returned.
 "
 [ coll start end  & items ]
-  (if (empty? items) coll
+  (cond (>= start end) coll
+       (empty? items) coll
+      :else
       (concat
         (subsq coll 0 start)
         items
@@ -67,8 +68,7 @@
 "
 [ coll pos & items]
   (if (empty? items) coll
-      (->> (concat [coll pos (inc pos) r] rs)
-        (apply replace))))
+     (apply replace coll pos (inc pos) items)))
 
 
 (defn insert

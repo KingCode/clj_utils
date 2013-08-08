@@ -40,15 +40,26 @@
         (is (= '() (but-subsq li 0 5)))
         (is (= '(5) (but-subsq li 0 4))))))
 
-(deftest replace-with-test
+(deftest replace-test
+  (testing "Should replace any subsequence of a collection for the indicated range, and handle empty args"
+    (let [ li '(1 2 3 4 5 6) ]
+       (is (= '(1 2 :a :b 5 6) (replace li 2 4 :a :b)))
+       (is (= '(1 2 :a  4 5 6) (replace li 2 3 :a)))
+       (is (= '(1 2 :a :b :c :d 4 5 6) (replace li 2 3 :a :b :c :d)))
+       (is (= '(:a :b 2 3 4 5 6) (replace li 0 1 :a :b)))
+       (is (= '(1 2 3 4 5 :a :b) (replace li 5 6 :a :b)))
+       (is (= '(1 2 3 4 5 6) (replace li 0 1 )))
+       (is (= '(1 2 3 4 5 6) (replace li 0 0 :a)))
+       )))
+(deftest replace-1-test
   (testing "Should replace a single element with one or more others, at the indicated position
             in a non-empty seq"
     (let [ li '(1 2 3 4 5)]
-        (is (= '(1 2 :three 4 5) (replace-with li 2 :three)))
-        (is (= '(:one 2 3 4 5) (replace-with li 0 :one)))
-        (is (= '(1 2 3 4 :five) (replace-with li 4 :five)))
-        (is (= '(1 2 :a :b :c 4 5) (replace-with li 2 :a :b :c)))
-        (is (= '(:one) (replace-with '(1) 0 :one))))))
+        (is (= '(1 2 :three 4 5) (replace-1 li 2 :three)))
+        (is (= '(:one 2 3 4 5) (replace-1 li 0 :one)))
+        (is (= '(1 2 3 4 :five) (replace-1 li 4 :five)))
+        (is (= '(1 2 :a :b :c 4 5) (replace-1 li 2 :a :b :c)))
+        (is (= '(:one) (replace-1 '(1) 0 :one))))))
 
 
 (deftest insert-test
