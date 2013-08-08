@@ -36,8 +36,11 @@
      the order they were added (last index is first in the returned sub seq.), newcoll is 
      the resulting collection.")
 
-  (remove [this coll] 
-    "Removes the last element and yields the resulting collection.")
+  (remove [this coll] [this coll pos]
+    "Removes the element at pos if provided, or the last element and yields the resulting collection.")
+
+  (remove-n [this coll n]
+    "Removes the last n elements from coll and yiels the resulting coll.")
 
   (remove-r [this coll from] [this coll from to]
     "Removes elements starting at from to the end of coll, or until 'to' 
@@ -71,20 +74,25 @@
     "Yields a subcoll of n elements starting at pos going backwards, in reversed order.")
 
   (but [this coll] [this coll pos] 
-    "Yields coll without the element at pos if provided, or the last otherwise.")
+    "Yields coll without the element at pos if provided, or the last otherwise.
+     For implementations using immutable colls, this is equivalent to its counterpart remove signature.")
 
   (but-n [this coll n]
-    "Yields a subcoll of all elements except the last n items.")
+    "Yields a subcoll of all elements except the last n items.
+     For implementations using immutable colls, this is equivalent to its counterpart remove signature.")
 
   (but-r [this coll from] [this coll from to]
     "Yields a subcoll without elements starting at from and up to 'to',
-     or all remaining elements if to is not provided.") 
+     or all remaining elements if to is not provided.
+     For implementations using immutable colls, this is equivalent to its counterpart remove signature.")
 
   (but-rn [this coll pos n]
-    "Yields a subcoll without the n elements starting at pos.")
+    "Yields a subcoll without the n elements starting at pos.
+     For implementations using immutable colls, this is equivalent to its counterpart remove signature.")
 
   (but-rnb [this coll pos n]
-    "Yields a subcoll without the n elements starting at pos, going backward.")
+    "Yields a subcoll without the n elements starting at pos, going backward.
+     For implementations using immutable colls, this is equivalent to its counterpart remove signature.")
 
   (insert [this coll pos & items] 
     "Inserts items at pos and yields the resulting coll") 
@@ -133,8 +141,17 @@
              (-> (cu-cl/but-subsq coll start)
                 vec)]))
 
-      (remove [ this coll ] 
+      (remove 
+         [ this coll ] 
           (-> (butlast coll) vec))
+      (remove
+         [ this coll pos ]
+          (-> (cu-cl/but-subsq coll pos (inc pos)) vec))
+
+      (remove-n 
+         [ this coll n ]
+           (let [ siz (count coll) ]
+             (remove-r this coll (- siz n) siz))) 
 
       (remove-r
          [ this coll from ]
@@ -180,40 +197,41 @@
 
       (peek-rn
         [ this coll from n ]
-            (peek-r coll from (+ from n)))
+            (peek-r this coll from (+ from n)))
 
       (peek-rnb
         [ this coll from n ]
           (->
-            (cu-cl/subsq coll (- from n) from)
+            (cu-cl/subsq coll (-> from (- n) inc) (inc from))
             reverse vec))
 
       (but
         [ this coll ]
-          (butlast (vvec coll)))
+          (remove this coll)
+          #_(-> (butlast coll) vec))
       (but
         [ this coll pos ]
-          (-> (cu-cl/but-nth coll pos) vec))
+          (remove this coll pos)
+          #_(-> (cu-cl/but-nth coll pos) vec))
 
       (but-n 
         [ this coll n ]
-          (let [ c (vvec coll) siz (count c) ]
-            (subvec c (- siz n) siz)))    
+          (remove-n this coll n))
 
       (but-r
         [ this coll from to ]
-          (-> (cu-cl/but-subsq coll from to) vec))
+          (remove-r this coll from to))
       (but-r
         [ this coll from ]
-          (-> (cu-cl/but-subsq coll from) vec))
+          (remove-r this coll from))
 
       (but-rn
         [ this coll from n ]
-          (-> (cu-cl/but-subsq coll from (+ from n)) vec))
+          (remove-rn this coll from n))
 
       (but-rnb 
         [ this coll from n ]
-          (-> (cu-cl/but-subsq coll (- from n) from) vec))
+          (remove-rnb this coll from n))
 
       (insert
         [ this coll pos & items ]

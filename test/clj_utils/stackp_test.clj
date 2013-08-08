@@ -114,4 +114,43 @@
        (is (ok [5 4] (peek-nb SP v 2)))
        (is (ok [5 4 3 2 1] (peek-nb SP v 5)))
        (is (ok [100] (peek-nb SP v2 1)))
+
+       (is (ok [5] (peek-r SP v 4 5)))
+       (is (ok [4 5] (peek-r SP v 3 5)))
+       (is (ok [1 2 3 4 5] (peek-r SP v 0 5)))
+       (is (ok [100] (peek-r SP v2 0 1)))
+
+       (is (ok [5] (peek-rn SP v 4 1)))
+       (is (ok [4 5] (peek-rn SP v 3 2)))
+       (is (ok [1 2 3 4 5] (peek-rn SP v 0 5)))
+       (is (ok [2 3 4] (peek-rn SP v 1 3)))
+       (is (ok [1] (peek-rn SP v 0 1)))
+       (is (ok [100] (peek-rn SP v2 0 1)))
+
+       (is (ok [5] (peek-rnb SP v 4 1)))
+       (is (ok [5 4] (peek-rnb SP v 4 2)))
+       (is (ok [5 4 3 2 1] (peek-rnb SP v 4 5)))  
+       (is (ok [4 3 2] (peek-rnb SP v 3 3)))
+       (is (ok [1] (peek-rnb SP v 0 1)))
+       (is (ok [100] (peek-rnb SP v2 0 1)))
+
+       (is (ok [1 2 3 4] (but SP v)))
+       (is (ok [1 2 3 4] (but SP v 4)))
+       (is (ok [1 2 3 5] (but SP v 3)))
+       (is (ok [] (but SP v2)))
+       (is (ok [] (but SP v2 0)))
+
+       (is (ok [1 2 3 4] (but SP v 4)))
+       (is (ok [1 2 4 5] (but SP v 2)))
+
+       (is (ok [1 2 3 4] (but-n SP v 1)))
+       (is (ok [1 2] (but-n SP v 3)))
+       (is (ok [1] (but-n SP v 4)))
+       (is (ok [] (but-n SP v 5)))
+
+       (is (ok [1 2 3 4] (but-r SP v 4 5)))
+       (is (ok [1 2 3] (but-r SP v 3)))
+       (is (ok [1 2] (but-rn SP v 2 3)))
+       (is (ok [5] (but-rnb SP v 3 4)))
+       
 )))
