@@ -148,12 +148,12 @@
             (-> (cu-cl/but-subsq coll pos (+ pos n)) vec))
       (remove-rn
          [ this coll pos]
-           (-> (cu-cl/but-subsq coll pos)))
+           (-> (cu-cl/but-subsq coll pos) vec))
 
       (remove-rnb
          [ this coll pos n ]
-            (let [start (- pos n) ]
-              (-> (cu-cl/but-subsq coll start pos) vec)))
+            (let [start (-> pos (- n) inc)  end (inc pos)]
+              (-> (cu-cl/but-subsq coll start end) vec)))
 
       (peek
         [ this coll ]
@@ -167,7 +167,7 @@
       (peek-nb
         [ this coll n ]
           (let [ siz (count coll) ]
-            (-> (cu-cl/subsq coll (- siz n) n) reverse vec)))
+            (-> (cu-cl/subsq coll (- siz n) siz) reverse vec)))
 
 
       (peek-r
