@@ -50,11 +50,11 @@
 
 (defn replace
 "Yields a new seq from coll with items replacing elements from start to end - 1 in coll,
- in the returned seq. If there are no items coll is returned.
+ in the returned seq. If there are no replacements itsm the replaced elements are still
+ returned from coll.
 "
 [ coll start end  & items ]
   (cond (>= start end) coll
-       (empty? items) coll
       :else
       (concat
         (subsq coll 0 start)
@@ -64,11 +64,10 @@
 
 (defn replace-1
 "Yields a new seq from coll with the element at pos replaced by each of items.
- If there are no items coll is returned.
+ If there are no items the replaced items is still removed.
 "
 [ coll pos & items]
-  (if (empty? items) coll
-     (apply replace coll pos (inc pos) items)))
+     (apply replace coll pos (inc pos) items))
 
 
 (defn insert

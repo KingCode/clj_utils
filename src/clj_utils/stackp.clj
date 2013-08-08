@@ -94,33 +94,34 @@
     "Yields a subcoll without the n elements starting at pos, going backward.
      For implementations using immutable colls, this is equivalent to its counterpart remove signature.")
 
-  (insert [this coll pos & items] 
-    "Inserts items at pos and yields the resulting coll") 
+  (insert [this coll pos [items]] 
+    "Unwraps and inserts items at pos and yields the resulting coll") 
 
-  (insert-b [this coll pos & items]
-    "Inserts items at (dec pos) in their reversed order of argument position, and yields the resulting coll") 
+  (insert-b [this coll pos [items]]
+    "Unwraps and inserts items at (dec pos) in their reversed order of argument position, and yields the resulting coll") 
 
-  (replace [this coll pos & items]
-    "Replaces element at index pos in coll with items.")
+  (replace [this coll pos [items]] [this coll [items]]
+    "Unwraps and replaces element at index pos (or after the last element if pos is not provided)
+     in coll,  with items. Yields the resulting coll")
 
-  (replace-b [this coll pos & items]
-    "Replaces element at index pos in coll with items in their reversed arg order.")
+  (replace-b [this coll pos [items]]
+    "Unwraps and replaces element at index pos in coll with items in their reversed arg order.")
 
-  (replace-n [this coll n & items]
-    "Replaces the last n elements of coll with items.")
+  (replace-n [this coll n [items]]
+    "Unwraps and replaces the last n elements of coll with items.")
 
-  (replace-r [this coll from to & items] 
-    "Replaces coll elements indexed from start to (dec to) with items in order of their argument position, and yields the 
+  (replace-r [this coll from to [items]]
+    "Unwraps and replaces coll elements indexed from start to (dec to) with items in order of their argument position, and yields the 
      resulting coll. If to is not provided all remaining elements after start pos. are replaced.")
 
-  (replace-rn [this coll pos n & items]
-    "Replaces n coll elements starting at pos with items.")
+  (replace-rn [this coll pos n [items]]
+    "Unwraps and replaces n coll elements starting at pos with items.")
 
-  (replace-rnb [this coll pos n & items ]
-    "Replaces n coll elements starting at pos going backwards, with items in their reversed arg order.")
+  (replace-rnb [this coll pos n [items]]
+    "Unwraps and replaces n coll elements starting at pos going backwards, with items in their reversed arg order.")
 
-  (push [this coll & items] 
-    "Pushes items on stack top; appends items to the end of coll"))
+  (push [this coll [items]]
+    "Unwraps and pushes items on stack top; appends items to the end of coll"))
 
 
 (def default-stack+
@@ -234,41 +235,46 @@
           (remove-rnb this coll from n))
 
       (insert
-        [ this coll pos & items ]
-          (->> (apply cu-cl/insert coll pos items)
+        [ this coll pos items ]
+          (-> (apply cu-cl/insert coll pos items)
               vec))
 
       (insert-b
-        [ this coll pos & items ]
-          (->> (reverse items) (apply cu-cl/insert coll (dec pos)) vec)) 
+        [ this coll pos items ]
+          (->> (reverse items) (apply cu-cl/insert coll pos) vec)) 
                             
       (replace
-        [ this coll pos & items ]
+        [ this coll pos items ]
           (-> (apply cu-cl/replace-1 coll pos items) vec))
+      (replace
+        [ this coll items ]
+          (replace this coll (count coll) items))
 
       (replace-b
-        [ this coll pos & items ]
-          (-> (reverse items) (apply cu-cl/replace-1 coll pos) vec))
+        [ this coll pos items ]
+          (->> (reverse items) (apply cu-cl/replace-1 coll pos) vec))
 
       (replace-n
-        [ this coll n & items ]
+        [ this coll n items ]
           (let [ siz (count coll) ]
             (-> (apply cu-cl/replace coll (- siz n) siz items) vec))) 
         
       (replace-r
-        [ this coll from to & items ]
+        [ this coll from to items ]
           (-> (apply cu-cl/replace coll from to items)
              vec))
              
       (replace-rn 
-        [ this coll pos n & items ]
+        [ this coll pos n items ]
           (-> (apply cu-cl/replace coll pos (+ pos n) items) vec))
 
       (replace-rnb
-        [ this coll pos n & items ]
-          (let [ siz (count coll) start (- pos n) ]
-             (-> (reverse items) (apply cu-cl/replace coll start pos) vec)))
+        [ this coll pos n items ]
+          (let [ siz (count coll) start (-> pos (- n) inc) end (inc pos) ]
+             (->> (reverse items) (apply cu-cl/replace coll start end) vec)))
 
       (push
-        [ this coll & items ]
-          (cu-c/thread-it (vvec coll) (apply conj it items))))))
+        [ this coll items ]
+          (cond (empty? items) (vvec coll)
+            :else
+              (cu-c/thread-it (vvec coll) (apply conj it items)))))))
