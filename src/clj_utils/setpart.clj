@@ -6,7 +6,7 @@
 (comment 
 "Partitioning of collections by establishing transitive closures from grouping elements according
  to user provided binary predicates. 
- See partition-coll function.
+ See ppartition function.
 ")
 
 #_(defn make-set [ coll ] (reduce #(conj %1 %2) #{} coll))
@@ -37,19 +37,18 @@ grows a superset for each transitive closure formed by subsets having common con
         (recur (merge-parts s subs))))))
                  
 
-(defn partition-coll 
-"Yields a partition of coll into distinct subsets according to pred.
-pred must be a binary predicate taking two coll elements and returing true if they should
-belong to the same partition, false otherwise. Transitivity is assumed on an existensial basis, 
-i.e. if  (pred a b) and (pred b c) are true the result is the same as if (pred a c) were true 
-as well, whether or not (pred a c) is true. 
+(defn ppartition 
+"Partitions a coll based on a binary predicate between any two distinct elements of the collection.
+When the predicate returns true the argument elements should belong to the same partition. 
+Transitivity is assumed on a greedy basis, i.e. if  (pred a b) and (pred b c) are true the result 
+is the same as if (pred a c) were true as well, whether or not (pred a c) is true. 
 Example: 
-         (partition-coll  #(or (and (even? %1) (even? %2)) 
+         (ppartition  #(or (and (even? %1) (even? %2)) 
                                (and (odd? %1) (odd? %2))) [1 2 3 4 5])
 yields the same contents as
         #{#{1 3 5} #{2 4}}
 and similarly
-        (partition-coll #(= (%1 (dec %2))) [1 3 4 6 7 8]) 
+        (ppartition #(= (%1 (dec %2))) [1 3 4 6 7 8]) 
 with
         #{#{1} #{3 4} #{6 7 8}}
 "
