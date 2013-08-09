@@ -39,7 +39,8 @@ grows a superset for each transitive closure formed by subsets having common con
 
 (defn ppartition 
 "Partitions a coll based on a binary predicate between any two distinct elements of the collection.
-When the predicate returns true the argument elements should belong to the same partition. 
+When the predicate returns true the argument elements should belong to the same partition. Yields
+a set of sets, each subset being a partition. 
 Transitivity is assumed on a greedy basis, i.e. if  (pred a b) and (pred b c) are true the result 
 is the same as if (pred a c) were true as well, whether or not (pred a c) is true. 
 Example: 
