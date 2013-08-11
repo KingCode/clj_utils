@@ -124,7 +124,7 @@
     "Unwraps and pushes items on stack top; appends items to the end of coll"))
 
 
-(def default-stack+
+(def default-impl
 "Stack+ default implementation, uses clojure vectors as input and does not keep state, i.e. a new vector is always
  returned. If inputs are not vectors they are converted.
 "

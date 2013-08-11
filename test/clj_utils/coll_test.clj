@@ -17,6 +17,12 @@
         (is (in? c4 '("donkey" 4 5)))
         (is (not (in? c4 '("mule" 3 2)))))))
 
+(deftest find-index-test
+  (testing "Should return the index of the first found item for which pred is true"
+    (is (= 2 (find-index even? [1 1 0 4 6 3])))
+    (is (= 1 (find-index #(> 0 %) [4 -2 0 -4 12])))
+    (is (= nil (find-index #(= 1000 %) [1 2 3])))))
+
 (deftest subsq-test
   (testing "Should extract a subsequence from sequentials"
     (let [ li '(1 2 3 4 5) vc [1 2 3 4 5] ]

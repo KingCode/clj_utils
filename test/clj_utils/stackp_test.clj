@@ -3,7 +3,7 @@
   (:use clj-utils.stackp)
   (:use clojure.test))
 
-(def SP default-stack+)
+(def SP default-impl)
 
 (defn okt 
 "Verifies tuple test output, i.e. that val = refval, coll = refvec and expected types"

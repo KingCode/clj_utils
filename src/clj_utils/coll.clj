@@ -9,6 +9,17 @@
 [coll x] (if (some #{x} coll) true false))
 
 
+(defn find-index
+"Yields the index of the first found element in coll for which pred returns true,
+ or nil if none is found. Coll must be indexable."
+[pred coll] 
+  (->> (range 0 (count coll)) 
+      (map #(vector %2 %1) coll)
+      (filter #(pred (second %))) 
+      first
+      first))
+
+
 (defn seq-or-vec?
 "Yields true if either (seq? coll) or (vector? coll) is true; false otherwise.
 "
