@@ -1,9 +1,10 @@
 (ns clj-utils.stackp-test
   (:refer-clojure :exclude [pop peek remove replace])
   (:use clj-utils.stackp)
+  (:import (clj_utils.stackp DefaultStack+))
   (:use clojure.test))
 
-(def SP default-impl)
+(def SP (DefaultStack+.))
 
 (defn okt 
 "Verifies tuple test output, i.e. that val = refval, coll = refvec and expected types"

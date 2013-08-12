@@ -124,12 +124,14 @@
     "Unwraps and pushes items on stack top; appends items to the end of coll"))
 
 
-(def default-impl
-"Stack+ default implementation, uses clojure vectors as input and does not keep state, i.e. a new vector is always
- returned. If inputs are not vectors they are converted.
-"
-  (let [ vvec #(if (vector? %) % (vec %)) ]
-    (reify Stack+
+(defn vvec [ coll ]
+    (if (vector? coll) coll (vec coll)))
+
+(deftype DefaultStack+ []
+;;"Stack+ default implementation, uses clojure vectors as input and does not keep state, i.e. a new vector is always
+;; returned. If inputs are not vectors they are converted.
+;;"
+Stack+
       (pop [ this coll ] 
         (let [ v (vvec coll) ]
           [ (last v) (core-pop v) ]))
@@ -277,4 +279,4 @@
         [ this coll items ]
           (cond (empty? items) (vvec coll)
             :else
-              (cu-c/thread-it (vvec coll) (apply conj it items)))))))
+              (cu-c/thread-it (vvec coll) (apply conj it items)))))
