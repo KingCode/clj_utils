@@ -196,7 +196,7 @@ Stack+
       (peek-r
         [ this coll from ]
            (let [ c (vvec coll) siz (count c) ]
-             (peek-r c from siz)))
+             (peek-r this c from siz)))
 
       (peek-rn
         [ this coll from n ]

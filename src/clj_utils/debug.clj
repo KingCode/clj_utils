@@ -28,7 +28,7 @@
         #(println hdr# " ARGS: "  %1 ", RETURN: " %2) ~@args)))
 
 
-#_(defn debug-info-1
+(defn debug-info-1
 "Prints to the console f's arguments and return values before and after execution, resp.
 "
 [ f & args ]

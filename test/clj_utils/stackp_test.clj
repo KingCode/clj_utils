@@ -69,6 +69,8 @@
     (let [ v [1 2 3 4 5] v2 [100] ]
        (is (ok [1 2 3 4] (remove SP v)))
        (is (ok [] (remove SP v2)))
+       (is (ok [1 2 3 4] (remove SP v 4)))
+       (is (ok [] (remove SP v2 0)))
 
        (is (ok [1 2 3 4] (remove-r SP v 4 5)))
        (is (ok [2 3 4 5] (remove-r SP v 0 1)))
@@ -123,6 +125,7 @@
        (is (ok [4 5] (peek-r SP v 3 5)))
        (is (ok [1 2 3 4 5] (peek-r SP v 0 5)))
        (is (ok [100] (peek-r SP v2 0 1)))
+       (is (ok [100] (peek-r SP v2 0)))
 
        (is (ok [5] (peek-rn SP v 4 1)))
        (is (ok [4 5] (peek-rn SP v 3 2)))
