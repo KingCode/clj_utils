@@ -17,6 +17,18 @@
         (is (in? c4 '("donkey" 4 5)))
         (is (not (in? c4 '("mule" 3 2)))))))
 
+
+(deftest split-find-test
+  (testing "Should split a coll at the first found occurrence of a designated marker"
+    (is (= [[1 2 3] [40 5 6]] (split-find [1 2 3 40 5 6] 40)))
+    (let [ coll [:a :b :c :d :e] ]
+        (is (= [[:a :b :c :d :e]] (split-find coll 3)))
+        (is (= [[:a :b :c :d :e]] (split-find coll :a)))
+        (is (= [[:a][:b :c :d :e]] (split-find coll :b)))
+        (is (= [[:a :b :c :d] [:e]] (split-find coll :e)))
+        (is (= [[:a :b :c :d :e]] (split-find coll :f)))))) 
+
+
 (deftest find-index-test
   (testing "Should return the index of the first found item for which pred is true"
     (is (= 2 (find-index even? [1 1 0 4 6 3])))

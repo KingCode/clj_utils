@@ -9,6 +9,19 @@
 [coll x] (if (some #{x} coll) true false))
 
 
+
+(defn split-find
+"Splits coll at the location of the first found item for which (= item e) is true.
+ The item is made part of the second seq in the returned tuple. Yields a tuple of
+ two sequences, before and after the split location.
+"
+[ coll e ]
+  (let [ found? (atom false)
+         pred #(cond @found? true
+                  :else (when (= e %) (reset! found? true))) ]
+     (partition-by pred coll)))
+
+
 (defn find-index
 "Yields the index of the first found element in coll for which pred returns true,
  or nil if none is found. Coll must be indexable."
